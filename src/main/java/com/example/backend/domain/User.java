@@ -1,0 +1,27 @@
+package com.example.backend.domain;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor
+@Table(name = "users")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    private String email;
+    private String password;
+    private String name;
+    private String phone;
+
+    public User (String email , String password , String name) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+    }
+
+}

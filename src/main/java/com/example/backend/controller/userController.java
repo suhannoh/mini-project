@@ -1,15 +1,41 @@
 package com.example.backend.controller;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.backend.service.UserService;
+import dto.JoinResponse;
+import dto.JoinUserRequest;
+import dto.LoginRequest;
+import dto.LoginResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
+@RequiredArgsConstructor
+@RequestMapping("/user")
 public class userController {
 
+    private final UserService userService;
+
+    // Test api
     @GetMapping("/test")
     public String test () {
         return "api 연결 성공";
+    }
+
+    // 회원가입 api [email,password,name,phone]
+    @PostMapping("/join")
+    public JoinResponse join (@RequestBody JoinUserRequest request) {
+        return userService.joinUser(request);
+    }
+
+    // 로그인 api [email,password]
+    @PostMapping("/login")
+    public LoginResponse login(@RequestBody LoginRequest request) {
+        try {
+            return userService.loginUser(request);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+
+        }
     }
 }
