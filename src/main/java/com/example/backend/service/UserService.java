@@ -2,14 +2,12 @@ package com.example.backend.service;
 
 import com.example.backend.domain.User;
 import com.example.backend.repository.UserRepository;
-import dto.JoinResponse;
-import dto.JoinUserRequest;
-import dto.LoginRequest;
-import dto.LoginResponse;
+import com.example.backend.dto.JoinResponse;
+import com.example.backend.dto.JoinUserRequest;
+import com.example.backend.dto.LoginRequest;
+import com.example.backend.dto.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 
 @Service

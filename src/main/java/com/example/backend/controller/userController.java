@@ -1,10 +1,10 @@
 package com.example.backend.controller;
 
 import com.example.backend.service.UserService;
-import dto.JoinResponse;
-import dto.JoinUserRequest;
-import dto.LoginRequest;
-import dto.LoginResponse;
+import com.example.backend.dto.JoinResponse;
+import com.example.backend.dto.JoinUserRequest;
+import com.example.backend.dto.LoginRequest;
+import com.example.backend.dto.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
