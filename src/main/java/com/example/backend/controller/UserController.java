@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 @RequestMapping("/user")
-public class userController {
+public class UserController {
 
     private final UserService userService;
 
@@ -24,7 +24,7 @@ public class userController {
 
     // 회원가입 api [email,password,name,phone]
     @PostMapping("/join")
-    public JoinResponse join (@RequestBody JoinUserRequest request) {
+    public JoinResponse join (@RequestBody JoinUserRequest request) throws IllegalAccessException {
         return userService.joinUser(request);
     }
 

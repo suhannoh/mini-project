@@ -12,11 +12,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor // 생성자 주입 X
+
 public class UserService {
 
     private final UserRepository userRepository;
 
-    public JoinResponse joinUser(JoinUserRequest request) {
+    public JoinResponse joinUser(JoinUserRequest request) throws IllegalAccessException {
+        if(request.getEmail().isBlank() || request.getPassword().isBlank() ||
+            request.getName().isBlank()) {
+            throw new IllegalAccessException("공백 오류");
+        }
         User user = new User(
                 request.getEmail(),
                 request.getPassword(),
