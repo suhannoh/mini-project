@@ -5,9 +5,8 @@ WORKDIR /app
 # 현재 프로젝트 전체 복사
 COPY . .
 
-# gradlew 실행 권한 주고 bootJar 빌드 (테스트는 건너뜀)
-RUN chmod +x ./gradlew
-RUN ./gradlew --no-daemon clean bootJar -x test
+# gradle 명령으로 바로 빌드 (wrapper 사용 X)
+RUN gradle --no-daemon clean bootJar -x test
 
 # 2단계: 실행용 JRE 이미지
 FROM eclipse-temurin:17-jre-jammy
