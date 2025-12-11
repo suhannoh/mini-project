@@ -1,5 +1,5 @@
 # ---- Build Stage ----
-FROM gradle:8.7-jdk17-alpine AS build
+FROM gradle:9.2.1-jdk17-alpine AS build
 WORKDIR /home/gradle/project
 
 COPY . .
