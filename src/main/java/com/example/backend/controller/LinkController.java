@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "https://mini-project-0yg2.onrender.com/:5173")
+@CrossOrigin(origins = {
+    "https://mini-project-0yg2.onrender.com",
+    "http://localhost:5173")
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class LinkController {
