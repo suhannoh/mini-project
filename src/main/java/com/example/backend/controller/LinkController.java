@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = {
-    "https://suhannoh.github.io",
-    "http://localhost:5173"
-})
+//@CrossOrigin(origins = {
+//    "https://suhannoh.github.io",
+//    "http://localhost:5173"
+//})
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class LinkController {
