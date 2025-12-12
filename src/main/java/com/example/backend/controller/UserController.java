@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = {
-    "https://mini-project-0yg2.onrender.com",
+    "https://suhannoh.github.io/mini-project-frontend/",
     "http://localhost:5173"
 })
 @RequiredArgsConstructor
