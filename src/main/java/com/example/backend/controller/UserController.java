@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "https://mini-project-0yg2.onrender.com/:5173")
+@CrossOrigin(origins = "https://mini-project-0yg2.onrender.com")
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
