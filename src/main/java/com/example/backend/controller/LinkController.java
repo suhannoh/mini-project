@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = {
-    "https://mini-project-0yg2.onrender.com",
+    "https://suhannoh.github.io/mini-project-frontend/",
     "http://localhost:5173"
 })
 @RequiredArgsConstructor
