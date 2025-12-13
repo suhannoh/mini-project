@@ -17,10 +17,10 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public JoinResponse joinUser(JoinUserRequest request) throws IllegalAccessException {
+    public JoinResponse joinUser(JoinUserRequest request) {
         if(request.getEmail().isBlank() || request.getPassword().isBlank() ||
             request.getName().isBlank()) {
-            throw new IllegalAccessException("공백 오류");
+            throw new IllegalArgumentException("공백 오류");
         }
         User user = new User(
                 request.getEmail(),
