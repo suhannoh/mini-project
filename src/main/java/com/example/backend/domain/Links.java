@@ -4,10 +4,14 @@ import com.example.backend.dto.LinksRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table (name = "links")
 @Getter
+@Setter
 @NoArgsConstructor
 public class Links {
 
@@ -19,14 +23,14 @@ public class Links {
     private String notionUrl;
     @Column (name = "git_hub_url")
     private String gitHubUrl;
-    @Column (name = "user_id")
-    private long user_id;
-    private String created_at;
-    private String updated_at;
+    @Column (name = "user_id", unique = true)
+    private long userId;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public Links (String notionUrl , String gitHubUrl , long user_id) {
         this.notionUrl = notionUrl;
         this.gitHubUrl = gitHubUrl;
-        this.user_id = user_id;
+        this.userId = user_id;
     }
 }

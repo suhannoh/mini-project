@@ -9,10 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-//@CrossOrigin(origins = {
-//    "https://suhannoh.github.io",
-//    "http://localhost:5173"
-//})
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class LinkController {
@@ -26,6 +22,10 @@ public class LinkController {
         } catch (IllegalArgumentException e){
             throw new RuntimeException(e);
         }
+    }
+    @PutMapping("/links")
+    public void setMyLink (@RequestBody LinksRequest req) {
+        linksService.setMyLink(req);
     }
 
     @GetMapping("/links")

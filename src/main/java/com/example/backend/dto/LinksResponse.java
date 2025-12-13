@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -13,15 +15,15 @@ public class LinksResponse {
     private long user_id;
     private String notionUrl;
     private String gitHubUrl;
-    private String updated_at;
+    private LocalDateTime updated_at;
     private String user_name;
 
     public LinksResponse(Links links, String name) {
         this.id = links.getId();
-        this.user_id = links.getUser_id();
+        this.user_id = links.getUserId();
         this.notionUrl = links.getNotionUrl();
         this.gitHubUrl = links.getGitHubUrl();
-        this.updated_at = links.getUpdated_at();
+        this.updated_at = links.getUpdatedAt();
         this.user_name = name;
     }
 }
