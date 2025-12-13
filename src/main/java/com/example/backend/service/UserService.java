@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserActiveService userActiveService;
 
     public JoinResponse joinUser(JoinUserRequest request) {
         if(request.getEmail().isBlank() || request.getPassword().isBlank() ||
@@ -42,6 +43,7 @@ public class UserService {
         if(!user.getPassword().equals(request.getPassword())) {
             throw new IllegalAccessException("비밀번호가 일치하지 않습니다");
         }
+        userActiveService.saveUserActive(user);
         return new LoginResponse(user);
     }
 }
