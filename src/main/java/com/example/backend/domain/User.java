@@ -1,5 +1,5 @@
 package com.example.backend.domain;
-
+//test
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
