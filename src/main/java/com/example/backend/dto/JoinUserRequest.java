@@ -2,9 +2,9 @@ package com.example.backend.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+@Setter
 @Getter
 @NoArgsConstructor
 public class JoinUserRequest {

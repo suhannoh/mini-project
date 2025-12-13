@@ -22,6 +22,9 @@ public class UserService {
             request.getName().isBlank()) {
             throw new IllegalArgumentException("공백 오류 ,,");
         }
+        if(userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("이미 사용중인 이메일입니다.");
+        }
         User user = new User(
                 request.getEmail(),
                 request.getPassword(),
