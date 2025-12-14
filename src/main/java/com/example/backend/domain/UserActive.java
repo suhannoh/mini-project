@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserActive {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "user_id")
     private Long userId;
 

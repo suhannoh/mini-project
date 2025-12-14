@@ -2,10 +2,8 @@ package com.example.backend.service;
 
 import com.example.backend.domain.User;
 import com.example.backend.domain.UserActive;
-import com.example.backend.dto.LoginResponse;
 import com.example.backend.repository.UserActiveRepository;
-import com.example.backend.repository.UserRepository;
-import lombok.NoArgsConstructor;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserActiveService {
 
-    private final UserRepository userRepository;
     private final UserActiveRepository userActiveRepository;
 
     public void saveUserActive (User res) {
@@ -25,6 +22,7 @@ public class UserActiveService {
         );
     }
 
+    @Transactional
     public List<UserActive> userActive() {
         userActiveRepository.deleteByLoggedInAtBefore(LocalDateTime.now().minusHours(2));
 
