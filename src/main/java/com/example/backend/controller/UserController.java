@@ -23,7 +23,7 @@ public class UserController {
 
     // 회원가입 api [email,password,name,phone]
     @PostMapping("/join")
-    public JoinResponse join (@RequestBody JoinUserRequest request) throws IllegalAccessException {
+    public JoinResponse join (@RequestBody JoinUserRequest request) {
         return userService.joinUser(request);
     }
 
@@ -36,5 +36,12 @@ public class UserController {
             throw new RuntimeException(e);
 
         }
+    }
+    @PostMapping("/{id}/edit")
+    public LoginResponse editUser(
+            @PathVariable Long id,
+            @RequestBody JoinUserRequest req
+    ) {
+       return userService.update(id, req);
     }
 }

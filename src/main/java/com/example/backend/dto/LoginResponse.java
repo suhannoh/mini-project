@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,6 +17,8 @@ public class LoginResponse {
     private String password;
     private String name;
     private String phone;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public LoginResponse(User user) {
         this.id = user.getId();
@@ -22,5 +26,7 @@ public class LoginResponse {
         this.password = user.getPassword();
         this.name = user.getName();
         this.phone = user.getPhone();
+        this.createdAt = user.getCreatedAt();
+        this.updatedAt = user.getUpdatedAt();
     }
 }

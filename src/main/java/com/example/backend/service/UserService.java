@@ -1,11 +1,13 @@
 package com.example.backend.service;
 
 import com.example.backend.domain.User;
+import com.example.backend.repository.UserActiveRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.dto.JoinResponse;
 import com.example.backend.dto.JoinUserRequest;
 import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.LoginResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserActiveService userActiveService;
+    private final UserActiveRepository userActiveRepository;
 
     public JoinResponse joinUser(JoinUserRequest request) {
         if(request.getEmail().isBlank() || request.getPassword().isBlank() ||
@@ -44,6 +47,25 @@ public class UserService {
             throw new IllegalAccessException("비밀번호가 일치하지 않습니다");
         }
         userActiveService.saveUserActive(user);
+        return new LoginResponse(user);
+    }
+
+    @Transactional
+    public LoginResponse update (Long id, JoinUserRequest req) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
+
+        if (req.getEmail() != null) user.setEmail(req.getEmail());
+        if (req.getName() != null) user.setName(req.getName());
+        if (req.getPhone() != null) user.setPhone(req.getPhone());
+
+        if (req.getPassword() != null && !req.getPassword().isBlank()) {
+            if (req.getPassword().length() < 5) {
+                throw new IllegalArgumentException("비밀번호는 5자 이상");
+            }
+            user.setPassword(req.getPassword());
+        }
+        userActiveRepository.updateUserName(id, req.getName());
         return new LoginResponse(user);
     }
 }
