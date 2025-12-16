@@ -17,12 +17,9 @@ public class LinkController {
     private final LinksService linksService;
     //links 저장
     @PostMapping("/links")
-    public void Links (@RequestBody LinksRequest req) {
-        try {
-            linksService.addLinks(req);
-        } catch (IllegalArgumentException e){
-            throw new RuntimeException(e);
-        }
+    public ResponseEntity<Object> Links (@RequestBody LinksRequest req) {
+        linksService.addLinks(req);
+        return ResponseEntity.ok().build();
     }
     @PutMapping("/links")
     public void setMyLink (@RequestBody LinksRequest req) {
@@ -33,7 +30,8 @@ public class LinkController {
     public List<LinksResponse> findAllLinks () {
         return linksService.findAllLinks();
     }
-        @GetMapping("/links/health")
+
+    @GetMapping("/links/health")
     public ResponseEntity<?> healthCheck() {
         return ResponseEntity.ok().build();
     }
