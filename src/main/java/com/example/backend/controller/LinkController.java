@@ -4,6 +4,7 @@ import com.example.backend.dto.LinksRequest;
 import com.example.backend.dto.LinksResponse;
 import com.example.backend.service.LinksService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,5 +32,9 @@ public class LinkController {
     @GetMapping("/links")
     public List<LinksResponse> findAllLinks () {
         return linksService.findAllLinks();
+    }
+        @GetMapping("/links/health")
+    public ResponseEntity<?> healthCheck() {
+        return ResponseEntity.ok().build();
     }
 }
