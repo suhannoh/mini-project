@@ -1,8 +1,9 @@
 package com.example.backend.controller;
 
 import com.example.backend.domain.Post;
-import com.example.backend.dto.PostRequestDto;
-import com.example.backend.dto.PostResponseDto;
+import com.example.backend.dto.posts.PostEditRequestDto;
+import com.example.backend.dto.posts.PostRequestDto;
+import com.example.backend.dto.posts.PostResponseDto;
 import com.example.backend.enums.PostSearchEnum;
 import com.example.backend.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,13 @@ public class PostController {
         // create / 201
         return ResponseEntity.status(201).build();
     }
+
+    @PutMapping("/posts")
+    public ResponseEntity<Void> edit (@RequestBody PostEditRequestDto req) {
+        postService.edit(req);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/posts")
     public List<PostResponseDto> findAllPost () {
         return postService.findAllPost();

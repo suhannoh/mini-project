@@ -1,4 +1,4 @@
-package com.example.backend.dto;
+package com.example.backend.dto.posts;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

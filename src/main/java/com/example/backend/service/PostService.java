@@ -2,8 +2,9 @@ package com.example.backend.service;
 
 import com.example.backend.domain.Post;
 import com.example.backend.domain.User;
-import com.example.backend.dto.PostRequestDto;
-import com.example.backend.dto.PostResponseDto;
+import com.example.backend.dto.posts.PostEditRequestDto;
+import com.example.backend.dto.posts.PostRequestDto;
+import com.example.backend.dto.posts.PostResponseDto;
 import com.example.backend.enums.PostSearchEnum;
 import com.example.backend.error.BusinessException;
 import com.example.backend.error.ErrorCode;
@@ -42,6 +43,34 @@ public class PostService {
 
         // 저장 / 저장 중 에러는 etc 예외로 통일
         Post post = Post.create(req);
+        postRepository.save(post);
+    }
+
+    public void edit (PostEditRequestDto req) {
+        if(req.userId() == null) {
+            throw new IllegalArgumentException("USER_ID 비어있습니다. ");
+        }
+        // 하나씩 나눠서 메세지를 다르게 하면 더 좋을듯
+        if( (req.title() == null || req.title().isBlank()) ||
+                (req.content() == null || req.content().isBlank()) ||
+                (req.category() == null || req.category().isBlank()) ||
+                (req.author() == null || req.author().isBlank())) {
+            throw new IllegalArgumentException("POST 필수 항목이 비어있습니다 ");
+        }
+        // 권한 확인 / 403 error - 아직은 못 함
+
+        // 유저 정보 확인 / 404 error
+        User user = userRepository.findById(req.userId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        // 저장 / 저장 중 에러는 etc 예외로 통일
+        Post post = postRepository.findById(req.postId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+        post.setTitle(req.title());
+        post.setContent(req.content());
+        post.setCategory(req.category());
+        post.setAuthor(req.author());
+
         postRepository.save(post);
     }
 
