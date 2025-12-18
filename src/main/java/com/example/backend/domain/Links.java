@@ -19,14 +19,14 @@ public class Links {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column (name = "notion_url")
     private String notionUrl;
     @Column (name = "git_hub_url")
     private String gitHubUrl;
     @Column (name = "user_id", unique = true)
-    private long userId;
+    private Long userId;
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;

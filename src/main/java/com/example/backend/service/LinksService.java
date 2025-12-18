@@ -4,6 +4,8 @@ import com.example.backend.domain.Links;
 import com.example.backend.domain.User;
 import com.example.backend.dto.LinksRequest;
 import com.example.backend.dto.LinksResponse;
+import com.example.backend.error.BusinessException;
+import com.example.backend.error.ErrorCode;
 import com.example.backend.repository.LinksRepository;
 import com.example.backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -24,24 +26,27 @@ public class LinksService {
     private final UserRepository userRepository;
 
     public void addLinks (LinksRequest req) {
-
-        // 입력값 검증
+        if(req.getUserId() == null) {
+            // USER_ID 검사 / 400 error
+            throw new IllegalArgumentException("USER_ID 가 비어있습니다");
+        }
 
         Links links = new Links (
                 req.getNotionUrl(),
                 req.getGitHubUrl(),
                 req.getUserId()
         );
-
+        // 저장 / 저장 중 에러는 etc 예외로 통일
         linksRepository.save(links);
     }
 
     public void setMyLink (LinksRequest req) {
         Links link = linksRepository.findByUserId(req.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("링크가 존재하지 않습니다."));;
+                .orElseThrow(() -> new BusinessException(ErrorCode.LINK_NOT_FOUND));;
 
         link.setGitHubUrl(req.getGitHubUrl());
         link.setNotionUrl(req.getNotionUrl());
+        // 수정 저장 / 저장 중 에러는 etc 예외로 통일
         linksRepository.save(link);
     }
 

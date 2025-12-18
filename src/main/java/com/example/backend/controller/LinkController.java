@@ -15,24 +15,30 @@ import java.util.List;
 public class LinkController {
 
     private final LinksService linksService;
-    //links 저장
+    // 유저 링크 추가
     @PostMapping("/links")
-    public ResponseEntity<Object> Links (@RequestBody LinksRequest req) {
+    public ResponseEntity<Void> Links (@RequestBody LinksRequest req) {
         linksService.addLinks(req);
+        // create / 201
+        return ResponseEntity.status(201).build();
+    }
+    // 유저 링크 수정
+    @PutMapping("/links")
+    public ResponseEntity<Void> setMyLink (@RequestBody LinksRequest req) {
+        linksService.setMyLink(req);
+        // ok / 200
         return ResponseEntity.ok().build();
     }
-    @PutMapping("/links")
-    public void setMyLink (@RequestBody LinksRequest req) {
-        linksService.setMyLink(req);
-    }
-
+    // 링크 테이블 전체 출력
     @GetMapping("/links")
     public List<LinksResponse> findAllLinks () {
         return linksService.findAllLinks();
     }
 
+    // Health Check !
     @GetMapping("/links/health")
     public ResponseEntity<?> healthCheck() {
+        // ok / 200
         return ResponseEntity.ok().build();
     }
 }

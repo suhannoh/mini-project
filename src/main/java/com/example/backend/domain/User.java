@@ -25,7 +25,7 @@ public class User {
             sequenceName = "users_seq",
             allocationSize = 1
     )
-    private long id;
+    private Long id;
 
     private String email;
     private String password;

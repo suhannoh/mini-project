@@ -21,8 +21,8 @@ public class PostController {
     @PostMapping("/posts")
     public ResponseEntity<Void> newPost (@RequestBody PostRequestDto req){
         postService.newPost(req);
-
-        return ResponseEntity.ok().build();
+        // create / 201
+        return ResponseEntity.status(201).build();
     }
     @GetMapping("/posts")
     public List<PostResponseDto> findAllPost () {
@@ -31,6 +31,7 @@ public class PostController {
 
     @GetMapping("/posts/{id}")
     public ResponseEntity<Post> getPostDetail(@PathVariable Long id) {
+        // 200 / ok
         return ResponseEntity.ok(postService.getPostDetail(id));
     }
  }

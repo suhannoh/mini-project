@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class LinksResponse {
-    private long id;
-    private long user_id;
+    private Long id;
+    private Long user_id;
     private String notionUrl;
     private String gitHubUrl;
     private LocalDateTime updated_at;

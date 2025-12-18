@@ -1,9 +1,10 @@
 package com.example.backend.service;
 
 import com.example.backend.domain.User;
+import com.example.backend.error.BusinessException;
+import com.example.backend.error.ErrorCode;
 import com.example.backend.repository.UserActiveRepository;
 import com.example.backend.repository.UserRepository;
-import com.example.backend.dto.JoinResponse;
 import com.example.backend.dto.JoinUserRequest;
 import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.LoginResponse;
@@ -21,14 +22,16 @@ public class UserService {
     private final UserActiveService userActiveService;
     private final UserActiveRepository userActiveRepository;
 
-    public JoinResponse joinUser(JoinUserRequest request) {
+    public void joinUser(JoinUserRequest request) {
+
         if(request.getEmail().isBlank() || request.getPassword().isBlank() ||
             request.getName().isBlank()) {
-            throw new IllegalArgumentException("공백 오류 ,,");
+            throw new IllegalArgumentException("USER_JOIN 필수 항목이 비어있습니다 ");
         }
         if(userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("이미 사용중인 이메일입니다.");
+            throw new BusinessException(ErrorCode.EMAIL_DUPLICATE);
         }
+
         User user = new User(
                 request.getEmail(),
                 request.getPassword(),
@@ -36,16 +39,16 @@ public class UserService {
         );
 
         userRepository.save(user);
-        return new JoinResponse(user);
     }
 
-    public LoginResponse loginUser(LoginRequest request) throws IllegalAccessException {
+    public LoginResponse loginUser(LoginRequest request) {
         User user = userRepository.findUserByEmail(request.getEmail()) //  이메일 없는경우
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_LOGIN_NOT_EMAIL));
 
         if(!user.getPassword().equals(request.getPassword())) {
-            throw new IllegalAccessException("비밀번호가 일치하지 않습니다");
+            throw new BusinessException(ErrorCode.USER_LOGIN_NOT_PASSWORD);
         }
+
         userActiveService.saveUserActive(user);
         return new LoginResponse(user);
     }
@@ -53,7 +56,7 @@ public class UserService {
     @Transactional
     public LoginResponse update (Long id, JoinUserRequest req) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if (req.getEmail() != null) user.setEmail(req.getEmail());
         if (req.getName() != null) user.setName(req.getName());
@@ -61,7 +64,7 @@ public class UserService {
 
         if (req.getPassword() != null && !req.getPassword().isBlank()) {
             if (req.getPassword().length() < 5) {
-                throw new IllegalArgumentException("비밀번호는 5자 이상");
+                throw new IllegalArgumentException("비밀번호가 5자리보다 짧습니다");
             }
             user.setPassword(req.getPassword());
         }

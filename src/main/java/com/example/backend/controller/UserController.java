@@ -1,7 +1,6 @@
 package com.example.backend.controller;
 
 import com.example.backend.service.UserService;
-import com.example.backend.dto.JoinResponse;
 import com.example.backend.dto.JoinUserRequest;
 import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.LoginResponse;
@@ -22,33 +21,30 @@ public class UserController {
         return "api 연결 성공";
     }
 
-    // 회원가입 api [email,password,name,phone]
+    // 회원가입
     @PostMapping("/join")
-    public JoinResponse join (@RequestBody JoinUserRequest request) {
-        return userService.joinUser(request);
+    public ResponseEntity<Void> join (@RequestBody JoinUserRequest request) {
+        userService.joinUser(request);
+        // create / 201
+        return ResponseEntity.status(201).build();
     }
 
     // 로그인 api [email,password]
-    // 너도 내 서버 주소로 날리면 이 정보 얻어갈 수 있어 이게 서버야
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
-        try {
-            return userService.loginUser(request);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-
-        }
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(userService.loginUser(request));
     }
+
     @PostMapping("/{id}/edit")
-    public LoginResponse editUser(
+    public ResponseEntity<LoginResponse> editUser(
             @PathVariable Long id,
             @RequestBody JoinUserRequest req
     ) {
-       return userService.update(id, req);
+       return ResponseEntity.ok(userService.update(id, req));
     }
 
     @GetMapping("/health")
-    public ResponseEntity<?> healthCheck() {
+    public ResponseEntity<Void> healthCheck() {
         return ResponseEntity.ok().build();
     }
 }
