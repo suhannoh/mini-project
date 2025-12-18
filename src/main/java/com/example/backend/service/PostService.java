@@ -10,6 +10,7 @@ import com.example.backend.error.BusinessException;
 import com.example.backend.error.ErrorCode;
 import com.example.backend.repository.PostRepository;
 import com.example.backend.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,7 @@ public class PostService {
         Post post = Post.create(req);
         postRepository.save(post);
     }
-
+    @Transactional
     public void edit (PostEditRequestDto req) {
         if(req.userId() == null) {
             throw new IllegalArgumentException("USER_ID 비어있습니다. ");
