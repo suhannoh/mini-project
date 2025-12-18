@@ -24,7 +24,7 @@ public class UserActivityController {
         return userActiveService.userActive();
     }
     @GetMapping("/useractive/health")
-    public ResponseEntity<?> healthCheck() {
+    public ResponseEntity<Void> healthCheck() {
         return ResponseEntity.ok().build();
     }
 }

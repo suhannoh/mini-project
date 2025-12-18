@@ -4,7 +4,7 @@ public class BusinessException extends RuntimeException{
 
     /*
 
-       예외에 들어갈 status , errorCode , msg 를 생성하는 곳
+       BusinessException 예외에 들어갈 status , errorCode , msg 를 생성하는 곳
 
        Throwble > Exception > RuntimeException > BusinessException
 

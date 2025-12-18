@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.domain.Post;
 import com.example.backend.dto.PostRequestDto;
 import com.example.backend.dto.PostResponseDto;
+import com.example.backend.enums.PostSearchEnum;
 import com.example.backend.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,5 +34,13 @@ public class PostController {
     public ResponseEntity<Post> getPostDetail(@PathVariable Long id) {
         // 200 / ok
         return ResponseEntity.ok(postService.getPostDetail(id));
+    }
+    @GetMapping("/posts/search")
+    public ResponseEntity<List<PostResponseDto>> search (
+            @RequestParam PostSearchEnum type,
+            @RequestParam String text
+            )
+    {
+        return ResponseEntity.ok(postService.search(type, text));
     }
  }

@@ -4,6 +4,7 @@ import com.example.backend.domain.Post;
 import com.example.backend.domain.User;
 import com.example.backend.dto.PostRequestDto;
 import com.example.backend.dto.PostResponseDto;
+import com.example.backend.enums.PostSearchEnum;
 import com.example.backend.error.BusinessException;
 import com.example.backend.error.ErrorCode;
 import com.example.backend.repository.PostRepository;
@@ -71,5 +72,27 @@ public class PostService {
         // 없는 게시글 상세 페이지 요청 / 404 error
         return postRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+    }
+
+    public List<PostResponseDto> search (PostSearchEnum type , String text) {
+        if(text == null) {
+            throw new IllegalArgumentException("검색할 내용을 입력해주세요");
+        }
+        List<Post> list_all = switch (type) {
+            case title -> postRepository.findByTitleContainingIgnoreCaseOrderByIdDesc(text);
+            case content -> postRepository.findByContentContainingIgnoreCaseOrderByIdDesc(text);
+            case author -> postRepository.findByAuthorContainingIgnoreCaseOrderByIdDesc(text);
+        };
+
+        List<PostResponseDto> list = new ArrayList<>();
+
+        for(Post li : list_all) {
+            list.add(new PostResponseDto(
+                    li.getId(), li.getTitle() , li.getContent(),
+                    li.getCategory() , li.getAuthor()
+            ));
+        }
+
+        return list;
     }
 }
