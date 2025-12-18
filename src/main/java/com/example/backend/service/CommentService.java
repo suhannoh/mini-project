@@ -51,7 +51,7 @@ public class CommentService {
             throw new IllegalArgumentException("POST_ID 받지 못 했습니다 ");
         }
 
-        List<Comment> list = commentRepository.findByPostIdOrderByIdDesc(id);
+        List<Comment> list = commentRepository.findByPostIdOrderByIdAsc((id));
         List<CommentResponse> result = new ArrayList<>();
         for(Comment c : list ) {
             User user = userRepository.findById(c.getUserId())
