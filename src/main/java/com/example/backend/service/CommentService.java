@@ -47,6 +47,10 @@ public class CommentService {
     }
 
     public List<CommentResponse> getComment (Long id) {
+        if(id == null) {
+            throw new IllegalArgumentException("POST_ID 받지 못 했습니다 ");
+        }
+
         List<Comment> list = commentRepository.findByPostIdOrderByIdDesc(id);
         List<CommentResponse> result = new ArrayList<>();
         for(Comment c : list ) {
