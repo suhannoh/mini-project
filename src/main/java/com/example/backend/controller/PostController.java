@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.domain.Post;
+import com.example.backend.dto.posts.DeletePostRequest;
 import com.example.backend.dto.posts.PostEditRequestDto;
 import com.example.backend.dto.posts.PostRequestDto;
 import com.example.backend.dto.posts.PostResponseDto;
@@ -50,5 +51,10 @@ public class PostController {
             )
     {
         return ResponseEntity.ok(postService.search(type, text));
+    }
+    @DeleteMapping("/posts/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id, @RequestBody DeletePostRequest req) {
+        postService.delete(id, req);
+        return ResponseEntity.noContent().build();
     }
  }

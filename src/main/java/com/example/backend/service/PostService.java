@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.domain.Post;
 import com.example.backend.domain.User;
+import com.example.backend.dto.posts.DeletePostRequest;
 import com.example.backend.dto.posts.PostEditRequestDto;
 import com.example.backend.dto.posts.PostRequestDto;
 import com.example.backend.dto.posts.PostResponseDto;
@@ -124,5 +125,17 @@ public class PostService {
         }
 
         return list;
+    }
+
+    @Transactional
+    public void delete(Long id, DeletePostRequest req) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
+
+        if (!post.getUserId().equals(req.userId())) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
+
+        postRepository.delete(post);
     }
 }
