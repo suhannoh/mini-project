@@ -1,9 +1,7 @@
-package com.example.backend.dto;
+package com.example.backend.dto.auth;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @NoArgsConstructor

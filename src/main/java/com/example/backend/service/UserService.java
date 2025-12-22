@@ -5,12 +5,14 @@ import com.example.backend.error.BusinessException;
 import com.example.backend.error.ErrorCode;
 import com.example.backend.repository.UserActiveRepository;
 import com.example.backend.repository.UserRepository;
-import com.example.backend.dto.JoinUserRequest;
-import com.example.backend.dto.LoginRequest;
-import com.example.backend.dto.LoginResponse;
+import com.example.backend.dto.auth.JoinUserRequest;
+import com.example.backend.dto.auth.LoginRequest;
+import com.example.backend.dto.auth.LoginResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -41,7 +43,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public LoginResponse loginUser(LoginRequest request) {
+    public User loginUser(LoginRequest request) {
         User user = userRepository.findUserByEmail(request.getEmail()) //  이메일 없는경우
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_LOGIN_NOT_EMAIL));
 
@@ -50,7 +52,8 @@ public class UserService {
         }
 
         userActiveService.saveUserActive(user);
-        return new LoginResponse(user);
+//        return new LoginResponse(user);
+        return user;
     }
 
     @Transactional
@@ -70,5 +73,10 @@ public class UserService {
         }
         userActiveRepository.updateUserName(id, req.getName());
         return new LoginResponse(user);
+    }
+    
+    public User findById (Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 }

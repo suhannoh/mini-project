@@ -2,6 +2,7 @@ package com.example.backend.error;
 
 public enum ErrorCode {
     BAD_REQUEST(400, "BAD_REQUEST", "요청이 올바르지 않습니다. (front"),
+    NOT_SESSION(401, "NOT_SESSION", "세션이 만료되었습니다. 다시 로그인 해주세요") ,
     FORBIDDEN(403, "FORBIDDEN" , "권한이 없습니다."),
     POST_NOT_FOUND(404, "POST_NOT_FOUND", "게시글이 없습니다."),
     LINK_NOT_FOUND(404, "LINK_NOT_FOUND", "링크가 존재하지 않습니다."),
