@@ -49,7 +49,7 @@ public class PostController {
     public ResponseEntity<List<PostResponse>> search (
             @RequestParam PostSearchEnum type,
             @RequestParam String text,
-            @RequestParam String category
+            @RequestParam(required = false, defaultValue = "all") String category
             )
     {
         return ResponseEntity.ok(postService.search(type, text, category));
