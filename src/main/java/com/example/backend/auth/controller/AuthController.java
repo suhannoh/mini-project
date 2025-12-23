@@ -60,4 +60,9 @@ public class AuthController {
     public ResponseEntity<Void> healthCheck() {
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/api/ping")
+    public ResponseEntity<Void> ping () {
+        return ResponseEntity.ok().build();
+    }
 }
