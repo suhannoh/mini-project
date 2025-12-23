@@ -3,6 +3,8 @@ package com.example.backend.user.service;
 import com.example.backend.user.domain.User;
 import com.example.backend.common.error.BusinessException;
 import com.example.backend.common.error.ErrorCode;
+import com.example.backend.user.dto.find.UserFIndResponse;
+import com.example.backend.user.dto.find.UserFindRequest;
 import com.example.backend.user_active.repository.UserActiveRepository;
 import com.example.backend.user.repository.UserRepository;
 import com.example.backend.user.dto.create.UserCreateRequest;
@@ -38,6 +40,17 @@ public class UserService {
         userActiveRepository.updateUserName(id, req.getName());
         return new LoginResponse(user);
     }
-    
+
+    public UserFIndResponse findPassword(UserFindRequest req) {
+        if(req.email().isBlank() || req.name().isBlank()) {
+            throw new IllegalArgumentException("빈 칸은 입력할 수 없습니다");
+        }
+
+        User user = userRepository.findByEmailAndName(req.email(), req.name())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        
+        return new UserFIndResponse("",user.getPassword());
+    }
 
 }
