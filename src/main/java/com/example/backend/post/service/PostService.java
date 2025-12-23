@@ -76,11 +76,20 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public List<PostResponse> findAllPost() {
+    public List<PostResponse> findAllPost(String category) {
         // post_id를 기준으로 내림차순하여 가져옴
-        List<Post> list_all = postRepository.findAll(
-                Sort.by(Sort.Direction.DESC, "id")
-        );
+//        List<Post> list_all = postRepository.findAll(
+//                Sort.by(Sort.Direction.DESC, "id")
+//        );
+        String cat = (category == null || category.isBlank()) ? "all" : category;
+        List<Post> list_all;
+        if("all".equals(cat)) {
+            list_all = postRepository.findAll(
+                    Sort.by(Sort.Direction.DESC, "id")
+            );
+        } else {
+            list_all = postRepository.findByCategoryOrderByIdDesc(category);
+        }
 
         List<PostResponse> list = new ArrayList<>();
 
@@ -105,26 +114,39 @@ public class PostService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
     }
 
-    public List<PostResponse> search (PostSearchEnum type , String text) {
+    public List<PostResponse> search (PostSearchEnum type , String text , String category) {
         if(text == null) {
             throw new IllegalArgumentException("검색할 내용을 입력해주세요");
         }
+        // category null이면 all로 처리
+        String cat = (category == null || category.isBlank()) ? "all" : category;
+
         List<Post> list_all = switch (type) {
             case title -> postRepository.findByTitleContainingIgnoreCaseOrderByIdDesc(text);
             case content -> postRepository.findByContentContainingIgnoreCaseOrderByIdDesc(text);
             case author -> postRepository.findByAuthorContainingIgnoreCaseOrderByIdDesc(text);
         };
+        List<Post> posts = new ArrayList<>();
 
-        List<PostResponse> list = new ArrayList<>();
+        if("all".equals(cat)) {
+            posts = list_all;
+        } else {
+            for(Post p : list_all) {
+                if (cat.equals(p.getCategory())) {
+                    posts.add(p);
+                }
+            }
+        }
+        List<PostResponse> result = new ArrayList<>();
 
-        for(Post li : list_all) {
-            list.add(new PostResponse(
-                    li.getId(), li.getTitle() , li.getContent(),
-                    li.getCategory() , li.getAuthor() , li.getCreatedAt()
+        for(Post p : posts) {
+            result.add(new PostResponse(
+                    p.getId(), p.getTitle() , p.getContent(),
+                    p.getCategory() , p.getAuthor() , p.getCreatedAt()
             ));
         }
 
-        return list;
+        return result;
     }
 
     @Transactional

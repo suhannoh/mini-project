@@ -36,8 +36,8 @@ public class PostController {
     }
 
     @GetMapping("/post")
-    public List<PostResponse> findAllPost () {
-        return postService.findAllPost();
+    public List<PostResponse> findAllPost (@RequestParam(defaultValue = "all") String category) {
+        return postService.findAllPost(category);
     }
 
     @GetMapping("/post/{id}")
@@ -48,10 +48,11 @@ public class PostController {
     @GetMapping("/post/search")
     public ResponseEntity<List<PostResponse>> search (
             @RequestParam PostSearchEnum type,
-            @RequestParam String text
+            @RequestParam String text,
+            @RequestParam String category
             )
     {
-        return ResponseEntity.ok(postService.search(type, text));
+        return ResponseEntity.ok(postService.search(type, text, category));
     }
     @DeleteMapping("/post/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, @RequestBody PostDeleteRequest req) {

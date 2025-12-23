@@ -14,4 +14,6 @@ public interface PostRepository extends JpaRepository<Post , Long> {
     List<Post> findByAuthorContainingIgnoreCaseOrderByIdDesc(String keyword);
 
     Optional<Post> findByIdAndUserId(Long id, Long userId);
+
+    List<Post> findByCategoryOrderByIdDesc(String category);
 }
