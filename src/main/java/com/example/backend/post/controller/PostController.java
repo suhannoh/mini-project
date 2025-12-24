@@ -55,6 +55,11 @@ public class PostController {
         return ResponseEntity.ok(postService.search(type, text, category , pageable));
     }
 
+    @GetMapping("/post/anonymous")
+    public ResponseEntity<List<PostResponse>> findAllAnon (@RequestParam(defaultValue = "all") String category) {
+        return ResponseEntity.ok(postService.findAllAnon(category));
+    }
+
     @GetMapping("/post/{id}")
     public ResponseEntity<Post> getPostDetail(@PathVariable Long id) {
         // 200 / ok

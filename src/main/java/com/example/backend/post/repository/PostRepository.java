@@ -9,13 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post , Long> {
-//    Page<Post> findByTitleContainingIgnoreCaseOrderByIdDesc(String keyword , Pageable pageable);
-//
-//    Page<Post> findByContentContainingIgnoreCaseOrderByIdDesc(String keyword , Pageable pageable);
-//
-//    Page<Post> findByAuthorContainingIgnoreCaseOrderByIdDesc(String keyword, Pageable pageable);
 
-//    Page<Post> findAllByOrderByIdDesc(org.springframework.data.domain.Pageable pageable);
     Page<Post> findByCategoryOrderByIdDesc(String category, Pageable pageable);
 
     Page<Post> findByTitleContainingIgnoreCase(String text, Pageable pageable);
@@ -29,5 +23,7 @@ public interface PostRepository extends JpaRepository<Post , Long> {
     Page<Post> findByAuthorContainingIgnoreCase(String text, Pageable pageable);
 
     Page<Post> findByCategoryAndAuthorContainingIgnoreCase(String cat, String text, Pageable pageable);
-//    List<Post> findByCategoryOrderByIdDesc(String category);
+
+    List<Post> findByCategoryAndAuthor(String category, String author);
+    List<Post> findByAuthor(String author);
 }
