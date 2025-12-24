@@ -154,6 +154,28 @@ public class PostService {
         ));
     }
 
+    public List<PostResponse> findAllAnon (String category) {
+        List<Post> postByAnon;
+        if (category == null || category.isBlank() || category.equals("all")) {
+            postByAnon = postRepository.findByAuthor("익명");
+        } else {
+            postByAnon = postRepository.findByCategoryAndAuthor(category, "익명");
+        }
+        List<PostResponse> result = new ArrayList<>();
+        for(Post p : postByAnon) {
+            PostResponse res = new PostResponse(
+                    p.getId(),
+                    p.getTitle(),
+                    p.getContent(),
+                    p.getCategory(),
+                    p.getAuthor(),
+                    p.getCreatedAt()
+            );
+            result.add(res);
+        }
+        return result;
+    }
+
     @Transactional
     public void delete(Long id, PostDeleteRequest req) {
         Post post = postRepository.findById(id)
