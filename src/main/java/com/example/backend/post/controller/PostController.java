@@ -8,6 +8,10 @@ import com.example.backend.post.dto.read.PostResponse;
 import com.example.backend.post.dto.search.PostSearchEnum;
 import com.example.backend.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +40,19 @@ public class PostController {
     }
 
     @GetMapping("/post")
-    public List<PostResponse> findAllPost (@RequestParam(defaultValue = "all") String category) {
-        return postService.findAllPost(category);
+    public Page<PostResponse> findAllPost (@RequestParam(defaultValue = "all") String category,
+                                           @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.DESC)Pageable pageable) {
+        return postService.findAllPost(category,pageable);
+    }
+    @GetMapping("/post/search")
+    public ResponseEntity<Page<PostResponse>> search (
+            @RequestParam PostSearchEnum type,
+            @RequestParam String text,
+            @RequestParam(required = false, defaultValue = "all") String category,
+            @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    )
+    {
+        return ResponseEntity.ok(postService.search(type, text, category , pageable));
     }
 
     @GetMapping("/post/{id}")
@@ -45,15 +60,7 @@ public class PostController {
         // 200 / ok
         return ResponseEntity.ok(postService.getPostDetail(id));
     }
-    @GetMapping("/post/search")
-    public ResponseEntity<List<PostResponse>> search (
-            @RequestParam PostSearchEnum type,
-            @RequestParam String text,
-            @RequestParam(required = false, defaultValue = "all") String category
-            )
-    {
-        return ResponseEntity.ok(postService.search(type, text, category));
-    }
+
     @DeleteMapping("/post/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, @RequestBody PostDeleteRequest req) {
         postService.delete(id, req);

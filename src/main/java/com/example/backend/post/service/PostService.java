@@ -13,6 +13,8 @@ import com.example.backend.post.repository.PostRepository;
 import com.example.backend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -76,33 +78,6 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public List<PostResponse> findAllPost(String category) {
-        // post_id를 기준으로 내림차순하여 가져옴
-//        List<Post> list_all = postRepository.findAll(
-//                Sort.by(Sort.Direction.DESC, "id")
-//        );
-        String cat = (category == null || category.isBlank()) ? "all" : category;
-        List<Post> list_all;
-        if("all".equals(cat)) {
-            list_all = postRepository.findAll(
-                    Sort.by(Sort.Direction.DESC, "id")
-            );
-        } else {
-            list_all = postRepository.findByCategoryOrderByIdDesc(category);
-        }
-
-        List<PostResponse> list = new ArrayList<>();
-
-        for(Post li : list_all) {
-            list.add(new PostResponse(
-                    li.getId(), li.getTitle() , li.getContent(),
-                    li.getCategory() , li.getAuthor(), li.getCreatedAt()
-            ));
-        }
-
-        return list;
-    }
-
     public Post getPostDetail (Long id) {
         // post_id 검사 / 400 error
         if(id == null) {
@@ -114,39 +89,69 @@ public class PostService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
     }
 
-    public List<PostResponse> search (PostSearchEnum type , String text , String category) {
+    // 카테고리 이동시 게시글 불러오기
+    public Page<PostResponse> findAllPost(String category , Pageable pageable){
+
+        String categoryValue = (category == null || category.isBlank()) ? "all" : category;
+        Page<Post> page;
+
+        if("all".equals(categoryValue)) {
+            // 전체
+            page = postRepository.findAll(pageable);
+        } else {
+            // 카테고리 판별
+            page = postRepository.findByCategoryOrderByIdDesc(category , pageable);
+        }
+            // PostResponse로 전달
+        return  page.map(post -> new PostResponse(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getCategory(),
+                post.getAuthor(),
+                post.getCreatedAt()
+        ));
+    }
+
+
+    // 게시글 검색 (카테고리 + 검색 타입 + 검색어 )
+    public Page<PostResponse> search (PostSearchEnum type , String text , String category , Pageable pageable) {
         if(text == null) {
             throw new IllegalArgumentException("검색할 내용을 입력해주세요");
         }
         // category null이면 all로 처리
-        String cat = (category == null || category.isBlank()) ? "all" : category;
+        String categoryValue = (category == null || category.isBlank()) ? "all" : category;
+        Page<Post> page;
+        // true 면 all , false 면 특정 카테고리
+        boolean isAll = "all".equalsIgnoreCase(categoryValue);
 
-        List<Post> list_all = switch (type) {
-            case title -> postRepository.findByTitleContainingIgnoreCaseOrderByIdDesc(text);
-            case content -> postRepository.findByContentContainingIgnoreCaseOrderByIdDesc(text);
-            case author -> postRepository.findByAuthorContainingIgnoreCaseOrderByIdDesc(text);
-        };
-        List<Post> posts = new ArrayList<>();
+        // 검색 타입이 제목
+        if (type == PostSearchEnum.title) {
+            page = isAll // 카테고리 전체 + 제목
+                    ? postRepository.findByTitleContainingIgnoreCase(text, pageable)
+                    : postRepository.findByCategoryAndTitleContainingIgnoreCase(categoryValue, text, pageable);
 
-        if("all".equals(cat)) {
-            posts = list_all;
+        // 검색 타입이 내용
+        } else if (type == PostSearchEnum.content) {
+            page = isAll // 카테고리 전체 + 내용
+                    ? postRepository.findByContentContainingIgnoreCase(text, pageable)
+                    : postRepository.findByCategoryAndContentContainingIgnoreCase(categoryValue, text, pageable);
+
+            // 검색 타입이 작성자
         } else {
-            for(Post p : list_all) {
-                if (cat.equals(p.getCategory())) {
-                    posts.add(p);
-                }
-            }
-        }
-        List<PostResponse> result = new ArrayList<>();
-
-        for(Post p : posts) {
-            result.add(new PostResponse(
-                    p.getId(), p.getTitle() , p.getContent(),
-                    p.getCategory() , p.getAuthor() , p.getCreatedAt()
-            ));
+            page = isAll // 카테고리 전체 + 작성자
+                    ? postRepository.findByAuthorContainingIgnoreCase(text, pageable)
+                    : postRepository.findByCategoryAndAuthorContainingIgnoreCase(categoryValue, text, pageable);
         }
 
-        return result;
+        return page.map(p -> new PostResponse(
+                p.getId(),
+                p.getTitle(),
+                p.getContent(),
+                p.getCategory(),
+                p.getAuthor(),
+                p.getCreatedAt()
+        ));
     }
 
     @Transactional
