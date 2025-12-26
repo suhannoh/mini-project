@@ -58,4 +58,10 @@ public class UserService {
         return new UserFIndResponse("",user.getPassword());
     }
 
+    public void deleteAccount (Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        userRepository.delete(user);
+    }
 }

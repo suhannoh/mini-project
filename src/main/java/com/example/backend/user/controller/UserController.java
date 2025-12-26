@@ -28,4 +28,10 @@ public class UserController {
     public ResponseEntity<UserFIndResponse> findPassword (@RequestBody UserFindRequest req) {
         return ResponseEntity.ok(userService.findPassword(req));
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteAccount (@RequestParam Long id) {
+        userService.deleteAccount(id);
+        return ResponseEntity.noContent().build();
+    }
 }
