@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserActiveRepository userActiveRepository;
 
     @Transactional
     public LoginResponse update (Long id, UserCreateRequest req) {
@@ -28,7 +27,8 @@ public class UserService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if (req.getEmail() != null && !req.getEmail().isBlank()) {
-            if(userRepository.existsByEmail(req.getEmail())) {
+            if (!req.getEmail().equals(user.getEmail())
+                    && userRepository.existsByEmail(req.getEmail())) {
                 throw new BusinessException(ErrorCode.EMAIL_DUPLICATE);
             }
             user.setEmail(req.getEmail());
