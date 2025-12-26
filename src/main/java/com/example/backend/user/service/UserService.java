@@ -27,17 +27,22 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        if (req.getEmail() != null) user.setEmail(req.getEmail());
-        if (req.getName() != null) user.setName(req.getName());
-        if (req.getPhone() != null) user.setPhone(req.getPhone());
-
+        if (req.getEmail() != null && !req.getEmail().isBlank()) {
+            if(userRepository.existsByEmail(req.getEmail())) {
+                throw new BusinessException(ErrorCode.EMAIL_DUPLICATE);
+            }
+            user.setEmail(req.getEmail());
+        }
+        if (req.getName() != null && !req.getName().isBlank()) user.setName(req.getName());
+        if (req.getPhone() != null && !req.getPassword().isBlank()) user.setPhone(req.getPhone());
         if (req.getPassword() != null && !req.getPassword().isBlank()) {
             if (req.getPassword().length() < 5) {
                 throw new IllegalArgumentException("비밀번호가 5자리보다 짧습니다");
             }
             user.setPassword(req.getPassword());
         }
-        userActiveRepository.updateUserName(id, req.getName());
+        user.setGender(req.getGender());
+//        userActiveRepository.updateUserName(id, req.getName());
         return new LoginResponse(user);
     }
 
