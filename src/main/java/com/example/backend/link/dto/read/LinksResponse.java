@@ -17,13 +17,15 @@ public class LinksResponse {
     private String gitHubUrl;
     private LocalDateTime updated_at;
     private String user_name;
+    private String gender;
 
-    public LinksResponse(Link link, String name) {
+    public LinksResponse(Link link, String name, String gender) {
         this.id = link.getId();
         this.user_id = link.getUserId();
         this.notionUrl = link.getNotionUrl();
         this.gitHubUrl = link.getGitHubUrl();
         this.updated_at = link.getUpdatedAt();
         this.user_name = name;
+        this.gender = gender;
     }
 }
