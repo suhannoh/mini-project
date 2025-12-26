@@ -10,7 +10,8 @@ public enum ErrorCode {
     USER_LOGIN_NOT_EMAIL(404, "USER_LOGIN_NOT_EMAIL", "존재하지 않는 이메일입니다"),
     USER_LOGIN_NOT_PASSWORD(404, "USER_LOGIN_NOT_PASSWORD", "비밀번호가 일치하지 않습니다"),
     EMAIL_DUPLICATE(409,"EMAIL_DUPLICATE" , "이미 사용중인 이메일입니다"),
-    INTERNAL_ERROR(500, "INTERNAL_ERROR", "서버 오류 (backend)");
+    INTERNAL_ERROR(500, "INTERNAL_ERROR", "서버 오류 (backend)"),
+    BLOCKED_STATUS(403, "BLOCKED_ACCOUNT" , "계정이 정지되었습니다");
 
 
     //GlobalExceptionHandler 에서 ResponseEntity 전달을 해주기위해

@@ -57,7 +57,7 @@ public class LinkService {
             User user = userRepository.findUserById(l.getUserId())
                             .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
 
-            resList.add(new LinksResponse(l,user.getName()));
+            resList.add(new LinksResponse(l,user.getName(), user.getGender()));
         }
         return resList;
     }

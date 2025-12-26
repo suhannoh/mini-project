@@ -26,18 +26,30 @@ public class User {
             allocationSize = 1
     )
     private Long id;
-
+    @Column(name="email")
     private String email;
+    @Column(name="password")
     private String password;
+    @Column(name="name")
     private String name;
     @Column(name="phone")
     private String phone;
+
+    @Column(name="gender")
+    private String gender;
+    @Enumerated(EnumType.STRING)
+    @Column(name="role")
+    private Role role = Role.USER;
+
     @Column(name="created_at", updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status = Status.ACTIVE;
 
 
     public User (String email , String password , String name) {
