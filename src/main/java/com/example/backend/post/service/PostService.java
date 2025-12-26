@@ -187,4 +187,22 @@ public class PostService {
 
         postRepository.delete(post);
     }
+
+    public List<PostResponse> findByUserId (Long userId) {
+        List<Post> result = postRepository.findByUserId(userId);
+        List<PostResponse> resultRes = new ArrayList<>();
+
+        for(Post p : result) {
+            PostResponse res = new PostResponse(
+                    p.getId(),
+                    p.getTitle(),
+                    p.getContent(),
+                    p.getCategory(),
+                    p.getAuthor(),
+                    p.getCreatedAt()
+            );
+            resultRes.add(res);
+        }
+        return resultRes;
+    }
 }

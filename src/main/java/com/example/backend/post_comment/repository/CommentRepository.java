@@ -21,4 +21,6 @@ public interface CommentRepository extends JpaRepository <Comment , Long> {
         order by c.id asc
     """)
     List<CommentResponse> findCommentResponsesByPostId(@Param("postId") Long postId);
+
+    List<Comment> findByUserId(Long userId);
 }

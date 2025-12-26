@@ -2,6 +2,7 @@ package com.example.backend.post_comment.service;
 
 import com.example.backend.post_comment.domain.Comment;
 import com.example.backend.post.domain.Post;
+import com.example.backend.post_comment.dto.read.MyCommentResponse;
 import com.example.backend.user.domain.User;
 import com.example.backend.post_comment.dto.create.CommentRequest;
 import com.example.backend.post_comment.dto.read.CommentResponse;
@@ -59,5 +60,11 @@ public class CommentService {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Comment_ID 에 해당하는 comment가 없습니다"));
         commentRepository.delete(comment);
+    }
+
+    public List<MyCommentResponse> getMyComment (Long userId) {
+        return commentRepository.findByUserId(userId).stream()
+                .map(MyCommentResponse :: create).toList();
+
     }
 }

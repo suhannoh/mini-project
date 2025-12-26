@@ -2,6 +2,7 @@ package com.example.backend.post_comment.controller;
 
 import com.example.backend.post_comment.dto.create.CommentRequest;
 import com.example.backend.post_comment.dto.read.CommentResponse;
+import com.example.backend.post_comment.dto.read.MyCommentResponse;
 import com.example.backend.post_comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,11 @@ public class CommentController {
     @GetMapping("/post/{postId}/comment")
     public List<CommentResponse> getComment (@PathVariable Long postId) {
        return commentService.getComment(postId);
+    }
+
+    @GetMapping("/post/my/comment")
+    public ResponseEntity<List<MyCommentResponse>> getMyComment (@RequestParam Long userId) {
+        return ResponseEntity.ok(commentService.getMyComment(userId));
     }
 
     //Comment ID

@@ -71,4 +71,10 @@ public class PostController {
         postService.delete(id, req);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/post/my")
+    public ResponseEntity<List<PostResponse>> findByUserId (@RequestParam Long userId) {
+
+        return ResponseEntity.ok(postService.findByUserId(userId));
+    }
  }
