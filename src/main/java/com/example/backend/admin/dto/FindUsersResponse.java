@@ -16,6 +16,7 @@ public record FindUsersResponse(
         Role role,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
+        LocalDateTime lastLoginAt,
         Status status
 ) {
     public static FindUsersResponse create (User user) {
@@ -28,6 +29,7 @@ public record FindUsersResponse(
                 user.getRole(),
                 user.getCreatedAt(),
                 user.getUpdatedAt(),
+                user.getLastLoginAt(),
                 user.getStatus()
         );
     }

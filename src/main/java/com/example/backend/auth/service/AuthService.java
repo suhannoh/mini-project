@@ -11,6 +11,9 @@ import com.example.backend.user.repository.UserRepository;
 import com.example.backend.user_active.service.UserActiveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor // 생성자 주입 X
@@ -41,6 +44,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    @Transactional
     public User loginUser(LoginRequest request) {
         User user = userRepository.findUserByEmail(request.getEmail()) //  이메일 없는경우
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_LOGIN_NOT_EMAIL));
@@ -53,6 +57,7 @@ public class AuthService {
             throw new BusinessException(ErrorCode.BLOCKED_STATUS);
         }
 
+        user.setLastLoginAt(LocalDateTime.now());
         userActiveService.saveUserActive(user);
         return user;
     }

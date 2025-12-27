@@ -50,6 +50,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status = Status.ACTIVE;
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
 
 
     public User (String email , String password , String name) {
