@@ -51,8 +51,9 @@ public class AdminController {
     //공지 상태 수정
     @PatchMapping("/notice")
     public  ResponseEntity<Void> activeNotice (@RequestParam Long id,
-                                               @RequestParam NoticeStatus status) {
-        adminService.activeNotice(id , status);
+                                               @RequestParam NoticeStatus status,
+                                               @RequestParam String noticeContent) {
+        adminService.activeNotice(id , status , noticeContent);
         return ResponseEntity.ok().build();
     }
     @DeleteMapping("/notice")

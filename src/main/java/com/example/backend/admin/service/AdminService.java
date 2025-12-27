@@ -67,10 +67,14 @@ public class AdminService {
     }
     // 공지 상태 수정
     @Transactional
-    public void activeNotice(Long id , NoticeStatus status) {
+    public void activeNotice(Long id , NoticeStatus status , String noticeContent) {
        Notice notice = noticeRepository.findById(id)
                .orElseThrow(() -> new BusinessException(ErrorCode.NOTICE_NOT_FOUND));
+       if(status == null || noticeContent.isBlank()) {
+           throw new IllegalArgumentException("공백으로 변경 할 수 없습니다");
+       }
        notice.setStatus(status);
+       notice.setNoticeContent(noticeContent);
     }
 
     public void deleteNotion (Long id) {
