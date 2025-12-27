@@ -7,6 +7,7 @@ public enum ErrorCode {
     POST_NOT_FOUND(404, "POST_NOT_FOUND", "게시글이 없습니다."),
     LINK_NOT_FOUND(404, "LINK_NOT_FOUND", "링크가 존재하지 않습니다."),
     USER_NOT_FOUND(404, "USER_NOT_FOUND", "사용자가 없습니다."),
+    NOTICE_NOT_FOUND(404, "NOTICE_NOT_FOUND", "해당 공지가 없습니다."),
     USER_LOGIN_NOT_EMAIL(404, "USER_LOGIN_NOT_EMAIL", "존재하지 않는 이메일입니다"),
     USER_LOGIN_NOT_PASSWORD(404, "USER_LOGIN_NOT_PASSWORD", "비밀번호가 일치하지 않습니다"),
     EMAIL_DUPLICATE(409,"EMAIL_DUPLICATE" , "이미 사용중인 이메일입니다"),
