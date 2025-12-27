@@ -25,11 +25,9 @@ public class AdminController {
         return ResponseEntity.ok(adminService.findAllUsers());
     }
 
-    @PatchMapping("/user/{id}")
-    public ResponseEntity<Void> updateUser (@PathVariable Long id ,
-                                            @RequestBody UpdateStatusRequest req
-                                            ) {
-        adminService.updateUser(id, req);
+    @PatchMapping("/user")
+    public ResponseEntity<Void> updateUser (@RequestBody UpdateStatusRequest req) {
+        adminService.updateUser(req);
         return ResponseEntity.noContent().build();
     }
     //공지 작성

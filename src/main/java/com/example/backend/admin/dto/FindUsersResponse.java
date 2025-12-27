@@ -1,5 +1,6 @@
 package com.example.backend.admin.dto;
 
+import com.example.backend.admin.domain.UserBlockHistory;
 import com.example.backend.user.domain.Role;
 import com.example.backend.user.domain.Status;
 import com.example.backend.user.domain.User;
@@ -17,9 +18,12 @@ public record FindUsersResponse(
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         LocalDateTime lastLoginAt,
-        Status status
+        Status status,
+        String reason,
+        LocalDateTime blockedAt,
+        long blockCount
 ) {
-    public static FindUsersResponse create (User user) {
+    public static FindUsersResponse create (User user , UserBlockHistory ubh , long count) {
         return new FindUsersResponse(
                 user.getId(),
                 user.getEmail(),
@@ -30,7 +34,10 @@ public record FindUsersResponse(
                 user.getCreatedAt(),
                 user.getUpdatedAt(),
                 user.getLastLoginAt(),
-                user.getStatus()
+                user.getStatus(),
+                ubh != null ? ubh.getReason() : null,
+                ubh != null ? ubh.getBlockedAt() : null,
+                count
         );
     }
 }

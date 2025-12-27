@@ -4,7 +4,10 @@ import com.example.backend.user.domain.Role;
 import com.example.backend.user.domain.Status;
 
 public record UpdateStatusRequest(
+        Long userId,
+        Long adminId,
         Role role,
-        Status status
+        Status status,
+        String reason
 ) {
 }
