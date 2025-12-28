@@ -44,7 +44,6 @@ public class User {
     @Column(name="created_at", updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
-    @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     @Enumerated(EnumType.STRING)

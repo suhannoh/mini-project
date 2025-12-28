@@ -13,6 +13,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 
 @Service
 @RequiredArgsConstructor // 생성자 주입 X
@@ -42,6 +44,7 @@ public class UserService {
             user.setPassword(req.getPassword());
         }
         user.setGender(req.getGender());
+        user.setUpdatedAt(LocalDateTime.now());
 //        userActiveRepository.updateUserName(id, req.getName());
         return new LoginResponse(user);
     }
