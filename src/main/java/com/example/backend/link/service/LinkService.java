@@ -30,7 +30,6 @@ public class LinkService {
             // USER_ID 검사 / 400 error
             throw new IllegalArgumentException("USER_ID 가 비어있습니다");
         }
-
         Link link = new Link(
                 req.getNotionUrl(),
                 req.getGitHubUrl(),

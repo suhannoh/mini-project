@@ -16,6 +16,8 @@ import com.example.backend.user.domain.Status;
 import com.example.backend.user.domain.User;
 import com.example.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,17 +33,20 @@ public class AdminService {
     private final UserBlockHistoryRepository userBlockHistoryRepository;
 
     // 모든 유저 찾아서 block history와 함께 전달
-    public List<FindUsersResponse> findAllUsers () {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .map(user -> {
+    public Page<FindUsersResponse> findAllUsers (Pageable pageable) {
+        // 기존 전체 가져오는거에서 페이징으로 변경 예정
+        Page<User> users = userRepository.findAll(pageable);
+//        List<User> users = userRepository.findAll();
+
+        return users.map(user -> {
                     UserBlockHistory ubh =
                             userBlockHistoryRepository.findTopByUserIdAndUnblockedAtIsNullOrderByBlockedAtDesc(user.getId())
                                     .orElse(null);
                     long count = userBlockHistoryRepository.countByUserId(user.getId());
                     return FindUsersResponse.create(user, ubh , count);
-                }).toList();
+                });
     }
+
     // 유저 상태변경
     @Transactional
     public void updateUser (UpdateStatusRequest req) {
@@ -82,15 +87,17 @@ public class AdminService {
         noticeRepository.save(notice);
     }
     // 공지 불러오기
-    public List<NoticeResponse> readNotice () {
-        return noticeRepository.findAll().stream()
-                .map(NoticeResponse :: create).toList();
+    public Page<NoticeResponse> readNotice (Pageable pageable) {
+        return noticeRepository.findAll(pageable).map(NoticeResponse :: create);
     }
+
     // 활성화된 공지 불러오기
     public List<NoticeResponse> readActiveNotice () {
+
         return noticeRepository.findByStatus(NoticeStatus.ACTIVE).stream()
                 .map(NoticeResponse :: create).toList();
     }
+
     // 공지 상태 수정
     @Transactional
     public void activeNotice(Long id , NoticeStatus status , String noticeContent) {
