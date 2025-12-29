@@ -1,16 +1,15 @@
 package com.example.backend.auth.service;
 
 
-import com.example.backend.auth.dto.LoginResponse;
+import com.example.backend.auth.dto.login.LoginResponse;
 import com.example.backend.common.error.BusinessException;
 import com.example.backend.common.error.ErrorCode;
 import com.example.backend.user.domain.Status;
 import com.example.backend.user.domain.User;
-import com.example.backend.user.dto.create.UserCreateRequest;
-import com.example.backend.auth.dto.LoginRequest;
+import com.example.backend.auth.dto.signup.SignUpRequest;
+import com.example.backend.auth.dto.login.LoginRequest;
 import com.example.backend.user.repository.UserRepository;
 import com.example.backend.user_active.service.UserActiveService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,13 +28,8 @@ public class AuthService {
 
     // 회원가입
     @Transactional
-    public void signUp(UserCreateRequest request) {
-        // 값 검사
-        if(request.getEmail().isBlank() || request.getPassword().isBlank() ||
-                request.getName().isBlank()) {
-            throw new IllegalArgumentException("USER_JOIN 필수 항목이 비어있습니다 ");
-        }
-        // 중복검사
+    public void signUp(SignUpRequest request) {
+        // 이메일 중복검사
         if(userRepository.existsByEmail(request.getEmail())) {
             throw new BusinessException(ErrorCode.EMAIL_DUPLICATE);
         }
@@ -72,12 +66,14 @@ public class AuthService {
         // 위 조건 통과 시 찾은 유저객체 반환
         return new LoginResponse(user);
     }
-
+    // 세션에 저장 된 ID로 유저 객체 찾아서 전달
     @Transactional(readOnly = true)
     public LoginResponse findBySessionId (Long userId) {
+        // 세션에 저장된 아이디가 없다면 에러 던지기
         if (userId == null) {
             throw new BusinessException(ErrorCode.NOT_SESSION);
         }
+        // 아이디로 찾은 객체 변환 후 반환
          User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 

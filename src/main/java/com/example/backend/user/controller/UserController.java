@@ -3,8 +3,8 @@ package com.example.backend.user.controller;
 import com.example.backend.user.dto.find.UserFIndResponse;
 import com.example.backend.user.dto.find.UserFindRequest;
 import com.example.backend.user.service.UserService;
-import com.example.backend.user.dto.create.UserCreateRequest;
-import com.example.backend.auth.dto.LoginResponse;
+import com.example.backend.auth.dto.signup.SignUpRequest;
+import com.example.backend.auth.dto.login.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ public class UserController {
     @PostMapping("/{id}/edit")
     public ResponseEntity<LoginResponse> editUser(
             @PathVariable Long id,
-            @RequestBody UserCreateRequest req
+            @RequestBody SignUpRequest req
     ) {
        return ResponseEntity.ok(userService.update(id, req));
     }

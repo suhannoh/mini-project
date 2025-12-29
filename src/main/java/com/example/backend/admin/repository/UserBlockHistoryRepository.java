@@ -10,6 +10,5 @@ public interface UserBlockHistoryRepository extends JpaRepository<UserBlockHisto
     // userid , unblock == null  가장 최근에 정지된 기록 1개만
     Optional<UserBlockHistory>
     findTopByUserIdAndUnblockedAtIsNullOrderByBlockedAtDesc(Long userId);
-    Optional<Object> findByUserId(Long userId);
     long countByUserId(Long userId);
 }

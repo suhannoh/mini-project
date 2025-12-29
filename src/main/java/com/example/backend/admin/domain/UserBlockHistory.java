@@ -1,7 +1,6 @@
 package com.example.backend.admin.domain;
 
-import com.example.backend.admin.dto.UpdateStatusRequest;
-import com.example.backend.user.domain.User;
+import com.example.backend.admin.dto.user.UpdateStatusRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
