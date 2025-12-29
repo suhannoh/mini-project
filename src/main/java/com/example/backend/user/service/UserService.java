@@ -5,10 +5,9 @@ import com.example.backend.common.error.BusinessException;
 import com.example.backend.common.error.ErrorCode;
 import com.example.backend.user.dto.find.UserFIndResponse;
 import com.example.backend.user.dto.find.UserFindRequest;
-import com.example.backend.user_active.repository.UserActiveRepository;
 import com.example.backend.user.repository.UserRepository;
-import com.example.backend.user.dto.create.UserCreateRequest;
-import com.example.backend.auth.dto.LoginResponse;
+import com.example.backend.auth.dto.signup.SignUpRequest;
+import com.example.backend.auth.dto.login.LoginResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public LoginResponse update (Long id, UserCreateRequest req) {
+    public LoginResponse update (Long id, SignUpRequest req) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 

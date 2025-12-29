@@ -1,4 +1,4 @@
-package com.example.backend.auth.dto;
+package com.example.backend.auth.dto.login;
 
 import com.example.backend.user.domain.Role;
 import com.example.backend.user.domain.User;

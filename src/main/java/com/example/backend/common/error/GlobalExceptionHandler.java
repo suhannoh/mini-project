@@ -1,6 +1,7 @@
 package com.example.backend.common.error;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,6 +25,20 @@ public class GlobalExceptionHandler {
         ErrorCode ec = ErrorCode.BAD_REQUEST;
         return ResponseEntity.status(ec.status)
                 .body(ErrorResponse.of(ec.code , e.getMessage()));
+    }
+
+    // @valid 유효성 검사 에러
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
+        ErrorCode ec = ErrorCode.BAD_REQUEST;
+        // 첫 번째 에러 메시지만 사용 (실무에서 제일 흔함)
+        String message = e.getBindingResult()
+                .getFieldErrors()
+                .get(0)
+                .getDefaultMessage();
+
+        return ResponseEntity.status(ec.status)
+                .body(ErrorResponse.of(ec.code, message));
     }
 
     // 500 / 예상 못 한 에러 (외 모든 에러)

@@ -1,4 +1,4 @@
-package com.example.backend.admin.dto;
+package com.example.backend.admin.dto.user;
 
 import com.example.backend.admin.domain.UserBlockHistory;
 import com.example.backend.user.domain.Role;

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -45,6 +46,7 @@ public class User {
     @CreatedDate
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
