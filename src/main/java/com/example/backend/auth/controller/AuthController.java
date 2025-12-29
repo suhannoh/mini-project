@@ -22,34 +22,32 @@ public class AuthController {
     // 회원가입
     @PostMapping("/join")
     public ResponseEntity<Void> join (@RequestBody UserCreateRequest request) {
-        authService.joinUser(request);
-        // create / 201
+        // 회원가입 로직
+        authService.signUp(request);
+        // 로직 실행 후 (create / 201)
         return ResponseEntity.status(201).build();
     }
 
     // 로그인 api [email,password] + SESSION 변경
     @PostMapping("/login")
-    public ResponseEntity<Void> login(
-            @RequestBody LoginRequest request,
-            HttpSession session
-    ) {
-        User user = authService.loginUser(request);
-
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request, HttpSession session) {
+        // 로그인 로직 후 유저 객체 반환
+        LoginResponse user = authService.login(request);
+        // 전달받은 세션에 LOGIN_USER_ID 이름에 user의 고유 id 저장
         session.setAttribute("LOGIN_USER_ID" , user.getId());
-
-        return ResponseEntity.ok().build();
+        // 로직 실행 후 (ok / 200 / LoginResponse dto)
+        return ResponseEntity.ok(user);
     }
 
     //세션 인증 [로그인 ,url 직접 이동 시]
     @GetMapping("/me")
     public ResponseEntity<LoginResponse> me (HttpSession session) {
+        // LOGIN_USER_ID 이름에 user의 고유 id 꺼내서 서비스로 전달
         Long userId = (Long) session.getAttribute("LOGIN_USER_ID");
-        if (userId == null) {
-            throw new BusinessException(ErrorCode.NOT_SESSION);
-        }
-        User user = authService.findById(userId);
-        return ResponseEntity.ok(new LoginResponse(user));
+        // 로직 실행 후 (ok / 200 / LoginResponse dto)
+        return ResponseEntity.ok(authService.findBySessionId(userId));
     }
+
     // 세션 종료 [로그아웃]
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
@@ -61,6 +59,7 @@ public class AuthController {
     public ResponseEntity<Void> healthCheck() {
         return ResponseEntity.ok().build();
     }
+
     // 로그인페이지 핑 체크
     @GetMapping("/api/ping")
     public ResponseEntity<Void> ping () {
