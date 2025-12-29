@@ -8,11 +8,9 @@ import com.example.backend.user.dto.find.UserFindRequest;
 import com.example.backend.user.repository.UserRepository;
 import com.example.backend.auth.dto.signup.SignUpRequest;
 import com.example.backend.auth.dto.login.LoginResponse;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -23,44 +21,38 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public LoginResponse update (Long id, SignUpRequest req) {
+    public LoginResponse updateUser (Long id, SignUpRequest req) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        if (req.getEmail() != null && !req.getEmail().isBlank()) {
-            if (!req.getEmail().equals(user.getEmail())
+        if (!req.getEmail().equals(user.getEmail())
                     && userRepository.existsByEmail(req.getEmail())) {
                 throw new BusinessException(ErrorCode.EMAIL_DUPLICATE);
             }
-            user.setEmail(req.getEmail());
-        }
-        if (req.getName() != null && !req.getName().isBlank()) user.setName(req.getName());
-        if (req.getPhone() != null && !req.getPassword().isBlank()) user.setPhone(req.getPhone());
-        if (req.getPassword() != null && !req.getPassword().isBlank()) {
-            if (req.getPassword().length() < 5) {
-                throw new IllegalArgumentException("비밀번호가 5자리보다 짧습니다");
-            }
-            user.setPassword(req.getPassword());
-        }
-        user.setGender(req.getGender());
-        user.setUpdatedAt(LocalDateTime.now());
-//        userActiveRepository.updateUserName(id, req.getName());
+
+        user.setEmail(req.getEmail());
+
+        if (!user.getName().equals(req.getName())) user.setName(req.getName());
+        if (req.getPhone() != null && !user.getPhone().equals(req.getPhone())) user.setPhone(req.getPhone());
+        if (!user.getGender().equals(req.getGender())) user.setGender(req.getGender());
+
+        user.setPassword(req.getPassword());
         return new LoginResponse(user);
     }
 
+    @Transactional(readOnly = true)
     public UserFIndResponse findPassword(UserFindRequest req) {
-        if(req.email().isBlank() || req.name().isBlank()) {
-            throw new IllegalArgumentException("빈 칸은 입력할 수 없습니다");
-        }
 
         User user = userRepository.findByEmailAndName(req.email(), req.name())
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        
         return new UserFIndResponse("",user.getPassword());
     }
 
-    public void deleteAccount (Long id) {
+    @Transactional
+    public void deleteUser (Long id) {
+        if(id == null) throw new IllegalArgumentException("UESR ID가 비어있습니다");
+
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 

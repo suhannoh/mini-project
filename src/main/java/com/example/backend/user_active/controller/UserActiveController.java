@@ -17,9 +17,10 @@ public class UserActiveController {
 
 
     @GetMapping("/useractive")
-    public List<UserActive> userActive() {
-        return userActiveService.userActive();
+    public List<UserActive> getActiveUser() {
+        return userActiveService.getActiveUser();
     }
+
     @GetMapping("/useractive/health")
     public ResponseEntity<Void> healthCheck() {
         return ResponseEntity.ok().build();
