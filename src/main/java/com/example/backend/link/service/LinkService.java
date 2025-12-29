@@ -8,28 +8,22 @@ import com.example.backend.common.error.BusinessException;
 import com.example.backend.common.error.ErrorCode;
 import com.example.backend.link.repository.LinkRepository;
 import com.example.backend.user.repository.UserRepository;
-import com.example.backend.user.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class LinkService {
-
+    // 회원 링크 테이블
     private final LinkRepository linkRepository;
-    private final UserService userService;
+    // 회원 테이블
     private final UserRepository userRepository;
 
-    public void addLinks (LinksRequest req) {
-        if(req.getUserId() == null) {
-            // USER_ID 검사 / 400 error
-            throw new IllegalArgumentException("USER_ID 가 비어있습니다");
-        }
+    @Transactional
+    public void createLink (LinksRequest req) {
         Link link = new Link(
                 req.getNotionUrl(),
                 req.getGitHubUrl(),
@@ -39,25 +33,27 @@ public class LinkService {
         linkRepository.save(link);
     }
 
-    public void setMyLink (LinksRequest req) {
+    @Transactional
+    public void updateLink (LinksRequest req) {
         Link link = linkRepository.findByUserId(req.getUserId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.LINK_NOT_FOUND));;
-
-        link.setGitHubUrl(req.getGitHubUrl());
-        link.setNotionUrl(req.getNotionUrl());
+                .orElseThrow(() -> new BusinessException(ErrorCode.LINK_NOT_FOUND));
+        if(!link.getGitHubUrl().equals(req.getGitHubUrl())){
+            link.setGitHubUrl(req.getGitHubUrl());
+        }
+        if(!link.getNotionUrl().equals(req.getNotionUrl())) {
+            link.setNotionUrl(req.getNotionUrl());
+        }
         // 수정 저장 / 저장 중 에러는 etc 예외로 통일
         linkRepository.save(link);
     }
 
+    @Transactional(readOnly = true)
     public List<LinksResponse> findAllLinks () {
-        List<Link> list = linkRepository.findAll();
-        List<LinksResponse> resList = new ArrayList<>();
-        for(Link l : list) {
-            User user = userRepository.findUserById(l.getUserId())
+        return linkRepository.findAll().stream()
+                .map(link -> {
+                    User user = userRepository.findUserById(link.getUserId())
                             .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
-
-            resList.add(new LinksResponse(l,user.getName(), user.getGender()));
-        }
-        return resList;
+                    return new LinksResponse(link, user.getName(), user.getGender());
+                }).toList();
     }
 }

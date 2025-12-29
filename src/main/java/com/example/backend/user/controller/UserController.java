@@ -5,6 +5,7 @@ import com.example.backend.user.dto.find.UserFindRequest;
 import com.example.backend.user.service.UserService;
 import com.example.backend.auth.dto.signup.SignUpRequest;
 import com.example.backend.auth.dto.login.LoginResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,21 +18,21 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/{id}/edit")
-    public ResponseEntity<LoginResponse> editUser(
+    public ResponseEntity<LoginResponse> updateUser(
             @PathVariable Long id,
-            @RequestBody SignUpRequest req
+            @Valid @RequestBody SignUpRequest req
     ) {
-       return ResponseEntity.ok(userService.update(id, req));
+       return ResponseEntity.ok(userService.updateUser(id, req));
     }
 
     @PostMapping("/find/password")
-    public ResponseEntity<UserFIndResponse> findPassword (@RequestBody UserFindRequest req) {
+    public ResponseEntity<UserFIndResponse> findPassword (@Valid @RequestBody UserFindRequest req) {
         return ResponseEntity.ok(userService.findPassword(req));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteAccount (@RequestParam Long id) {
-        userService.deleteAccount(id);
+    public ResponseEntity<Void> deleteUser (@RequestParam Long id) {
+        userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 }

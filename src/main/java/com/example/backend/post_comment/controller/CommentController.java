@@ -4,6 +4,7 @@ import com.example.backend.post_comment.dto.create.CommentRequest;
 import com.example.backend.post_comment.dto.read.CommentResponse;
 import com.example.backend.post_comment.dto.read.MyCommentResponse;
 import com.example.backend.post_comment.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +17,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/post/comment")
-    public ResponseEntity<Void> createComment (@RequestBody CommentRequest req) {
-        commentService.newComment(req);
+    public ResponseEntity<Void> createComment (@Valid @RequestBody CommentRequest request) {
+        commentService.createComment(request);
         return ResponseEntity.status(201).build();
     }
 

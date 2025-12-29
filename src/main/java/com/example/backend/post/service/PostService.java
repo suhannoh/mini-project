@@ -1,6 +1,7 @@
 package com.example.backend.post.service;
 
 import com.example.backend.post.domain.Post;
+import com.example.backend.post.dto.read.PostSearchRequest;
 import com.example.backend.user.domain.User;
 import com.example.backend.post.dto.delete.PostDeleteRequest;
 import com.example.backend.post.dto.update.PostUpdateRequest;
@@ -11,12 +12,11 @@ import com.example.backend.common.error.BusinessException;
 import com.example.backend.common.error.ErrorCode;
 import com.example.backend.post.repository.PostRepository;
 import com.example.backend.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,20 +27,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    public void newPost (PostCreateRequest req) {
-        // 유효성 검사 / 400 error
-        if(req.getUserId() == null) {
-            throw new IllegalArgumentException("USER_ID 비어있습니다. ");
-        }
-        // 하나씩 나눠서 메세지를 다르게 하면 더 좋을듯
-        if( (req.getTitle() == null || req.getTitle().isBlank()) ||
-            (req.getContent() == null || req.getContent().isBlank()) ||
-            (req.getCategory() == null || req.getCategory().isBlank()) ||
-            (req.getAuthor() == null || req.getAuthor().isBlank())) {
-            throw new IllegalArgumentException("POST 필수 항목이 비어있습니다 ");
-        }
-        // 권한 확인 / 403 error - 아직은 못 함
-
+    @Transactional
+    public void createPost (PostCreateRequest req) {
         // 유저 정보 확인 / 404 error
         User user = userRepository.findById(req.getUserId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -49,20 +37,9 @@ public class PostService {
         Post post = Post.create(req);
         postRepository.save(post);
     }
-    @Transactional
-    public void edit (PostUpdateRequest req) {
-        if(req.userId() == null) {
-            throw new IllegalArgumentException("USER_ID 비어있습니다. ");
-        }
-        // 하나씩 나눠서 메세지를 다르게 하면 더 좋을듯
-        if( (req.title() == null || req.title().isBlank()) ||
-                (req.content() == null || req.content().isBlank()) ||
-                (req.category() == null || req.category().isBlank()) ||
-                (req.author() == null || req.author().isBlank())) {
-            throw new IllegalArgumentException("POST 필수 항목이 비어있습니다 ");
-        }
-        // 권한 확인 / 403 error - 아직은 못 함
 
+    @Transactional
+    public void updatePost (PostUpdateRequest req) {
         // 유저 정보 확인 / 404 error
         User user = userRepository.findById(req.userId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -78,19 +55,10 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public Post getPostDetail (Long id) {
-        // post_id 검사 / 400 error
-        if(id == null) {
-            throw new IllegalArgumentException("POST_ID 가 없습니다");
-        }
-
-        // 없는 게시글 상세 페이지 요청 / 404 error
-        return postRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
-    }
 
     // 카테고리 이동시 게시글 불러오기
-    public Page<PostResponse> findAllPost(String category , Pageable pageable){
+    @Transactional(readOnly = true)
+    public Page<PostResponse> findByCategory(String category , Pageable pageable){
 
         String categoryValue = (category == null || category.isBlank()) ? "all" : category;
         Page<Post> page;
@@ -113,35 +81,33 @@ public class PostService {
         ));
     }
 
-
     // 게시글 검색 (카테고리 + 검색 타입 + 검색어 )
-    public Page<PostResponse> search (PostSearchEnum type , String text , String category , Pageable pageable) {
-        if(text == null) {
-            throw new IllegalArgumentException("검색할 내용을 입력해주세요");
-        }
+    @Transactional(readOnly = true)
+    public Page<PostResponse> searchPost (PostSearchRequest request, Pageable pageable) {
         // category null이면 all로 처리
-        String categoryValue = (category == null || category.isBlank()) ? "all" : category;
+        String categoryValue =
+                (request.category() == null || request.category().isBlank()) ? "all" : request.category();
         Page<Post> page;
         // true 면 all , false 면 특정 카테고리
         boolean isAll = "all".equalsIgnoreCase(categoryValue);
 
         // 검색 타입이 제목
-        if (type == PostSearchEnum.title) {
+        if (request.type() == PostSearchEnum.title) {
             page = isAll // 카테고리 전체 + 제목
-                    ? postRepository.findByTitleContainingIgnoreCase(text, pageable)
-                    : postRepository.findByCategoryAndTitleContainingIgnoreCase(categoryValue, text, pageable);
+                    ? postRepository.findByTitleContainingIgnoreCase(request.text(), pageable)
+                    : postRepository.findByCategoryAndTitleContainingIgnoreCase(categoryValue, request.text(), pageable);
 
-        // 검색 타입이 내용
-        } else if (type == PostSearchEnum.content) {
+            // 검색 타입이 내용
+        } else if (request.type() == PostSearchEnum.content) {
             page = isAll // 카테고리 전체 + 내용
-                    ? postRepository.findByContentContainingIgnoreCase(text, pageable)
-                    : postRepository.findByCategoryAndContentContainingIgnoreCase(categoryValue, text, pageable);
+                    ? postRepository.findByContentContainingIgnoreCase(request.text(), pageable)
+                    : postRepository.findByCategoryAndContentContainingIgnoreCase(categoryValue, request.text(), pageable);
 
             // 검색 타입이 작성자
         } else {
             page = isAll // 카테고리 전체 + 작성자
-                    ? postRepository.findByAuthorContainingIgnoreCase(text, pageable)
-                    : postRepository.findByCategoryAndAuthorContainingIgnoreCase(categoryValue, text, pageable);
+                    ? postRepository.findByAuthorContainingIgnoreCase(request.text(), pageable)
+                    : postRepository.findByCategoryAndAuthorContainingIgnoreCase(categoryValue, request.text(), pageable);
         }
 
         return page.map(p -> new PostResponse(
@@ -154,6 +120,20 @@ public class PostService {
         ));
     }
 
+    @Transactional(readOnly = true)
+    public Post getPostDetail (Long id) {
+        // post_id 검사 / 400 error
+        if(id == null) {
+            throw new IllegalArgumentException("POST_ID 가 없습니다");
+        }
+
+        // 없는 게시글 상세 페이지 요청 / 404 error
+        return postRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+    }
+
+
+    @Transactional(readOnly = true)
     public List<PostResponse> findAllAnon (String category) {
         List<Post> postByAnon;
         if (category == null || category.isBlank() || category.equals("all")) {
@@ -177,7 +157,7 @@ public class PostService {
     }
 
     @Transactional
-    public void delete(Long id, PostDeleteRequest req) {
+    public void deletePost(Long id, PostDeleteRequest req) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
 
@@ -188,7 +168,11 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    @Transactional(readOnly = true)
     public List<PostResponse> findByUserId (Long userId) {
+        if(userId == null) {
+            throw new IllegalArgumentException("USER_ID 가 비어있습니다.. ");
+        }
         List<Post> result = postRepository.findByUserId(userId);
         List<PostResponse> resultRes = new ArrayList<>();
 
