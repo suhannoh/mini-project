@@ -3,6 +3,7 @@ package com.example.backend.post_comment.controller;
 import com.example.backend.post_comment.dto.create.CommentRequest;
 import com.example.backend.post_comment.dto.read.CommentResponse;
 import com.example.backend.post_comment.dto.read.MyCommentResponse;
+import com.example.backend.post_comment.dto.read.readCommentResponse;
 import com.example.backend.post_comment.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class CommentController {
     }
 
     @GetMapping("/post/{postId}/comment")
-    public List<CommentResponse> getComment (@PathVariable Long postId) {
+    public List<readCommentResponse> getComment (@PathVariable Long postId) {
        return commentService.getComment(postId);
     }
 
