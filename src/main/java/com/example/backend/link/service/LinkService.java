@@ -23,7 +23,7 @@ public class LinkService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void createLink (LinksRequest req) {
+    public void createLink(LinksRequest req) {
         Link link = new Link(
                 req.getNotionUrl(),
                 req.getGitHubUrl(),
@@ -34,13 +34,13 @@ public class LinkService {
     }
 
     @Transactional
-    public void updateLink (LinksRequest req) {
+    public void updateLink(LinksRequest req) {
         Link link = linkRepository.findByUserId(req.getUserId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.LINK_NOT_FOUND));
-        if(!link.getGitHubUrl().equals(req.getGitHubUrl())){
+        if (!link.getGitHubUrl().equals(req.getGitHubUrl())) {
             link.setGitHubUrl(req.getGitHubUrl());
         }
-        if(!link.getNotionUrl().equals(req.getNotionUrl())) {
+        if (!link.getNotionUrl().equals(req.getNotionUrl())) {
             link.setNotionUrl(req.getNotionUrl());
         }
         // 수정 저장 / 저장 중 에러는 etc 예외로 통일
@@ -48,12 +48,7 @@ public class LinkService {
     }
 
     @Transactional(readOnly = true)
-    public List<LinksResponse> findAllLinks () {
-        return linkRepository.findAll().stream()
-                .map(link -> {
-                    User user = userRepository.findUserById(link.getUserId())
-                            .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
-                    return new LinksResponse(link, user.getName(), user.getGender());
-                }).toList();
+    public List<LinksResponse> findAllLinks() {
+        return linkRepository.findAllLinkWithUserInfo();
     }
 }

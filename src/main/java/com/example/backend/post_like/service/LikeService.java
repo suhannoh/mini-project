@@ -36,6 +36,10 @@ public class LikeService {
         int likeCount = likeRepository.countByPostIdAndStatus(req.postId(), LikeStatus.LIKE);
         return new LikeResponse(likeCount , liked);
     }
+    @Transactional(readOnly = true)
+    public int getCountLike (Long postId) {
+        return likeRepository.countByPostIdAndStatus(postId , LikeStatus.LIKE);
+    }
 
     @Transactional(readOnly = true)
     public LikeResponse readLike (LikeCreateRequest req) {

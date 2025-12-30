@@ -20,19 +20,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     select new com.example.backend.admin.dto.user.FindUsersResponse(
         u.id , u.email, u.name, u.phone, u.gender , u.role ,
         u.createdAt, u.updatedAt , u.lastLoginAt , u.status,
-        (select ub.reason
-            from UserBlockHistory ub
-            where ub.userId = u.id
-               and ub.unblockedAt is null),
-        (select ub.blockedAt
-             from UserBlockHistory ub
-             where ub.userId = u.id
-               and ub.unblockedAt is null),
-        (select count(ub)
-            from UserBlockHistory ub
-            where ub.userId = u.id )
-        )
-    from User u           
+        h.reason, h.blockedAt,
+        (SELECT count(hh)
+         FROM UserBlockHistory hh
+         where hh.userId = u.id
+           )
+         )
+    from User u
+    left join UserBlockHistory h 
+        ON h.userId = u.id and h.unblockedAt is null    
     """)
     Page<FindUsersResponse> findAllUsersWithBlockInfo (Pageable pageable);
 }
