@@ -22,21 +22,4 @@ public record FindUsersResponse(
         LocalDateTime blockedAt,
         long blockCount
 ) {
-    public static FindUsersResponse create (User user , UserBlockHistory ubh , long count) {
-        return new FindUsersResponse(
-                user.getId(),
-                user.getEmail(),
-                user.getName(),
-                user.getPhone(),
-                user.getGender(),
-                user.getRole(),
-                user.getCreatedAt(),
-                user.getUpdatedAt(),
-                user.getLastLoginAt(),
-                user.getStatus(),
-                ubh != null ? ubh.getReason() : null,
-                ubh != null ? ubh.getBlockedAt() : null,
-                count
-        );
-    }
 }
