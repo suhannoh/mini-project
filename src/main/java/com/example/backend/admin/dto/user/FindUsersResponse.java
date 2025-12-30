@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 public record FindUsersResponse(
         Long id ,
         String email,
-//        String password,
         String name,
         String phone,
         String gender,
