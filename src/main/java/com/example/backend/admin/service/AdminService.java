@@ -40,18 +40,7 @@ public class AdminService {
     @Transactional(readOnly = true)
     public Page<FindUsersResponse> findAllUsers (Pageable pageable) {
         // 페이지 사이즈만큼 가져와 페이지 타입으로 저장
-        Page<User> users = userRepository.findAll(pageable);
-
-        return users.map(user -> {
-            // 하나씩 꺼내서 유저 정지 디테일 테이블에서 조회하여 정지된 기록이 있는지 (정지가 풀린 시간이 있어야 풀린거임)
-            // 해당 아이디의 전체카운트 (정지이력 카운트) 를 조회한다
-                    UserBlockHistory ubh =
-                            userBlockHistoryRepository.findTopByUserIdAndUnblockedAtIsNullOrderByBlockedAtDesc(user.getId())
-                                    .orElse(null);
-                    long count = userBlockHistoryRepository.countByUserId(user.getId());
-                    // FindUsersResponse 타입으로 변환 후 전달
-                    return FindUsersResponse.create(user, ubh , count);
-                });
+          return userRepository.findAllUsersWithBlockInfo(pageable);
     }
 
     // 유저 상태변경
