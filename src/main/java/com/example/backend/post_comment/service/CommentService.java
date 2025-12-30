@@ -3,6 +3,7 @@ package com.example.backend.post_comment.service;
 import com.example.backend.post_comment.domain.Comment;
 import com.example.backend.post.domain.Post;
 import com.example.backend.post_comment.dto.read.MyCommentResponse;
+import com.example.backend.post_comment.dto.read.readCommentResponse;
 import com.example.backend.user.domain.User;
 import com.example.backend.post_comment.dto.create.CommentRequest;
 import com.example.backend.post_comment.dto.read.CommentResponse;
@@ -37,7 +38,7 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentResponse> getComment (Long postId) {
+    public List<readCommentResponse> getComment (Long postId) {
         if(postId == null) {
             throw new IllegalArgumentException("POST_ID 받지 못 했습니다 ");
         }
